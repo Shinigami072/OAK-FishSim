@@ -31,11 +31,14 @@ namespace DefaultNamespace
 
         private void FixedUpdate()
         {
+            //transfer calculated values
             _sumDirectionCalc = _sumDirection;
-            _sumDirection = Vector3.zero;
             _sumSpeedCalc = _sumSpeed;
-            _sumSpeed = 0f;
             _fishCountCalc = _fishCount;
+            
+            //resetAccumulators
+            _sumSpeed = 0f;
+            _sumDirection = Vector3.zero;
             _fishCount = 0;
         }
 
@@ -74,25 +77,34 @@ namespace DefaultNamespace
         {
             if (other.CompareTag("FishAgent"))
             {
-                _fishCount++;
+                
                 FishAgentController otherFish = other.gameObject.GetComponent<FishAgentController>();
+                
                 var position = transform.position;
-                Vector3 otherPosition = other.transform.position;
+                var otherPosition = other.transform.position;
 
                 var dist = Vector3.Distance(position, otherPosition);
 
+                //not collide
                 if (dist < repulsionRange)
                 {
+                    _fishCount++;
                     _sumDirection += -(otherPosition - position).normalized;
                     _sumSpeed += maxVelocity * (1 - dist / repulsionRange);
                 }
+                
+                //align movement
                 else if (dist < alignmentRange)
                 {
+                    _fishCount++;
                     _sumDirection += otherFish.direction;
                     _sumSpeed += otherFish.veloctity;
                 }
+                
+                //move together
                 else if (dist < attractionRange)
                 {
+                    _fishCount++;
                     _sumDirection += (otherPosition - position).normalized;
                     _sumSpeed += maxVelocity * ((dist-alignmentRange) / (attractionRange-alignmentRange));
                 }
