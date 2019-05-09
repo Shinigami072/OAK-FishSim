@@ -5,6 +5,7 @@ namespace DefaultNamespace
     public abstract class FishMovementStrategy : MonoBehaviour
     {
         public abstract Vector3 GetDirection(Vector3 direction,float velocity);
+        public abstract float GetVelocity(Vector3 direction, float velocity);
         public float weight;
         
     }
