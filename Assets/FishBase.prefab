@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1701849697416564395}
   - component: {fileID: 8415485302153608352}
   - component: {fileID: 5932574868395902603}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FishBase
   m_TagString: FishAgent
   m_Icon: {fileID: 0}
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 1}
-  veloctity: 0.01
+  velocity: 0
 --- !u!114 &8415485302153608352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,6 +96,7 @@ MonoBehaviour:
   alignmentRange: 13
   attractionRange: 20
   maxVelocity: 0.09
+  mainWeight: 1
 --- !u!114 &5932574868395902603
 MonoBehaviour:
   m_ObjectHideFlags: 0

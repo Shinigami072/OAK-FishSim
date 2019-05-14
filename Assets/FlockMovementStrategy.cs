@@ -10,48 +10,41 @@ namespace DefaultNamespace
         public float alignmentRange = 7f;
         public float attractionRange = 18f;
         public float maxVelocity = 0.5f;
+        public float mainWeight = 1.0f;
 
-        private Vector3 _sumDirection = Vector3.zero;
         private Vector3 _sumSpeed = Vector3.zero;
         private float _fishCount = 0;
-        private Vector3 _outDir = Vector3.zero;
-        private Vector3 _sumDirectionCalc;
+
+        private Vector3 _outSpeed = Vector3.zero;
         private Vector3 _sumSpeedCalc;
         private float _fishCountCalc;
-        private FishAgentController controller;
+        private FishAgentController _controller;
 
         private void Start()
         {
-            controller = GetComponent<FishAgentController>();
+            _controller = GetComponent<FishAgentController>();
             //range check
             if (repulsionRange > alignmentRange || alignmentRange > attractionRange || repulsionRange > attractionRange)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("", "Ranges misplaced");
             if (maxVelocity <= 0)
-                throw new ArgumentOutOfRangeException("maxVelocity", "it should be >0");
+                throw new ArgumentOutOfRangeException(paramName: "", message: "maxVlocity should be >0");
         }
 
         private void FixedUpdate()
         {
             //transfer calculated values
-//            _sumDirectionCalc = _sumDirection;
             _sumSpeedCalc = _sumSpeed;
-            _fishCountCalc = _fishCount;
+            _fishCountCalc = _fishCount + mainWeight;
+            _outSpeed = (_sumSpeedCalc + _controller.direction * _controller.velocity) / _fishCountCalc;
 
             //resetAccumulators
             _sumSpeed = Vector3.zero;
-//            _sumDirection = Vector3.zero;
             _fishCount = 0;
         }
 
-//        public override Vector3 GetDirection(Vector3 direction, float velocity)
-//        {
-//            _outDir = ((_sumSpeedCalc + direction * velocity) / (_fishCountCalc + 1));
-//            return ((_sumSpeedCalc + direction * velocity) / (_fishCountCalc + 1)).normalized;
-//        }
-
         public override Vector3 GetVelocity(Vector3 direction, float velocity)
         {
-            return ((_sumSpeedCalc + direction * velocity) / (_fishCountCalc + 1));
+            return _outSpeed;
         }
 
         //Debug Drawing
@@ -68,52 +61,52 @@ namespace DefaultNamespace
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(position, repulsionRange);
 
-            Debug.DrawLine(position + Vector3.up, position + Vector3.up + _outDir * 1000, Color.blue);
+            Debug.DrawLine(position, position + _outSpeed * 100, Color.blue);
         }
 
 
         private void OnTriggerStay(Collider other)
         {
-            if (other.CompareTag("FishAgent"))
+            if (!other.CompareTag("FishAgent")) return;
+
+            var otherFish = other.gameObject.GetComponent<FishAgentController>();
+
+            var position = transform.position;
+            var otherPosition = other.transform.position;
+
+            var dist = otherPosition - position;
+            var distMagnitude = dist.magnitude;
+
+
+            var weightFish = 1.0f;//+ 0.1f * Vector3.Dot(_controller.direction, (dist).normalized);
+
+            if (weightFish < 1.05f)
+                weightFish = 1.0f;
+            
+//            var weightFish = 1.0f;
+            //not collide
+            if (distMagnitude < repulsionRange)
             {
-                FishAgentController otherFish = other.gameObject.GetComponent<FishAgentController>();
+                _fishCount += weightFish;
+                var direction = -(dist).normalized * weightFish;
+                _sumSpeed += direction * maxVelocity * (1 - distMagnitude / repulsionRange);
+            }
 
-                var position = transform.position;
-                var otherPosition = other.transform.position;
+            //align movement
+            else if (distMagnitude < alignmentRange)
+            {
+                _fishCount += weightFish;
+                var direction = otherFish.direction * weightFish;
+                _sumSpeed += direction * otherFish.velocity;
+            }
 
-                var dist = Vector3.Distance(position, otherPosition);
-
-//                var dir = 0.1f * Vector3.Dot(controller.direction, (otherPosition - position).normalized);
-//                if (dir < 0.05f)
-//                    dir = 0;
-//                dir += 1.0f;
-                var dir = 1.0f;
-                //not collide
-                if (dist < repulsionRange)
-                {
-                    _fishCount += dir;
-                    var d = -(otherPosition - position).normalized * dir;
-//                    _sumDirection += d;
-                    _sumSpeed += d * maxVelocity * (1 - dist / repulsionRange);
-                }
-
-                //align movement
-                else if (dist < alignmentRange)
-                {
-                    _fishCount += dir;
-                    var d = otherFish.direction * dir;
-//                    _sumDirection += d;
-                    _sumSpeed += d * otherFish.veloctity;
-                }
-
-                //move together
-                else if (dist < attractionRange)
-                {
-                    _fishCount += dir;
-                    var d = (otherPosition - position).normalized * dir;
-//                    _sumDirection += d;
-                    _sumSpeed += d * maxVelocity * (dist - alignmentRange) / (attractionRange - alignmentRange);
-                }
+            //move together
+            else if (distMagnitude < attractionRange)
+            {
+                _fishCount += weightFish;
+                var direction = (dist).normalized * weightFish;
+                _sumSpeed += direction * maxVelocity * (distMagnitude - alignmentRange) /
+                             (attractionRange - alignmentRange);
             }
         }
     }
