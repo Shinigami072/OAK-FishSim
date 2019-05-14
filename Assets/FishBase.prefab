@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5309580412437758336}
   - component: {fileID: 1701849697416564395}
   - component: {fileID: 8415485302153608352}
+  - component: {fileID: 5932574868395902603}
   m_Layer: 0
   m_Name: FishBase
   m_TagString: FishAgent
@@ -46,7 +47,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 18
+  m_Radius: 20
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5309580412437758336
 Rigidbody:
@@ -77,7 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 1}
-  veloctity: 0.1
+  veloctity: 0.01
 --- !u!114 &8415485302153608352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,9 +93,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   repulsionRange: 3.5
-  alignmentRange: 7
-  attractionRange: 18
-  maxVelocity: 0.5
+  alignmentRange: 13
+  attractionRange: 20
+  maxVelocity: 0.09
+--- !u!114 &5932574868395902603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309580412437758348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf8b53ffdfb4c53a546ae29ca6b9259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 1
 --- !u!1001 &2308619449232684735
 PrefabInstance:
   m_ObjectHideFlags: 0
