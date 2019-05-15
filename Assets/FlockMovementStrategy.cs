@@ -78,10 +78,10 @@ namespace DefaultNamespace
             var distMagnitude = dist.magnitude;
 
 
-            var weightFish = 1.0f;//+ 0.1f * Vector3.Dot(_controller.direction, (dist).normalized);
-
-            if (weightFish < 1.05f)
-                weightFish = 1.0f;
+            var weightFish = 1.0f-0.3F*Mathf.Abs(Vector3.Angle(_controller.direction, dist)/180.0f);
+//
+//            if (weightFish < 1.05f)
+//                weightFish = 1.0f;
             
 //            var weightFish = 1.0f;
             //not collide

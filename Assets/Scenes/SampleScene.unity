@@ -259,7 +259,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: 0.00015228987, y: -0.8703952, z: 0.0002694428, w: 0.49235383}
-  m_LocalPosition: {x: 70.638916, y: 37.812656, z: 58.099457}
+  m_LocalPosition: {x: 10.47, y: 0.01, z: 6.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -368,22 +368,22 @@ PrefabInstance:
     - target: {fileID: 4013227807273182349, guid: 1670bace8e00c3444839a1b2f14e5918,
         type: 3}
       propertyPath: count
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4013227807273182350, guid: 1670bace8e00c3444839a1b2f14e5918,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 40.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4013227807273182350, guid: 1670bace8e00c3444839a1b2f14e5918,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 38.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4013227807273182350, guid: 1670bace8e00c3444839a1b2f14e5918,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 42.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4013227807273182350, guid: 1670bace8e00c3444839a1b2f14e5918,
         type: 3}
@@ -537,7 +537,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5309580411250193130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 54.7, y: 37.8, z: 44.9}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1080539999}
@@ -571,7 +571,7 @@ GameObject:
   - component: {fileID: 1701849696162020813}
   - component: {fileID: 8415485303307620294}
   - component: {fileID: 5309580411250193131}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FishBase
   m_TagString: FishAgent
   m_Icon: {fileID: 0}
