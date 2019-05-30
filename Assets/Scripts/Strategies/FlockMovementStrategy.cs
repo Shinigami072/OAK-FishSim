@@ -73,23 +73,22 @@ namespace DefaultNamespace
 
             var position = transform.position;
             var otherPosition = other.transform.position;
-
             var dist = otherPosition - position;
             var distMagnitude = dist.magnitude;
 
 
-            var weightFish = 1.0f-0.3F*Mathf.Abs(Vector3.Angle(_controller.direction, dist)/180.0f);
+            var weightFish = 1.0f-0.5F*(Vector3.Angle(_controller.direction, dist)/180.0f);
 //
 //            if (weightFish < 1.05f)
 //                weightFish = 1.0f;
-            
+             
 //            var weightFish = 1.0f;
             //not collide
             if (distMagnitude < repulsionRange)
             {
                 _fishCount += weightFish;
                 var direction = -(dist).normalized * weightFish;
-                _sumSpeed += direction * maxVelocity * (1 - distMagnitude / repulsionRange);
+                _sumSpeed += maxVelocity * (1 - distMagnitude / repulsionRange) * direction;
             }
 
             //align movement
