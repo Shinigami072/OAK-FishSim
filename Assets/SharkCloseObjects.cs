@@ -12,7 +12,7 @@ public class SharkCloseObjects : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!objects.Contains(other.gameObject.transform))
+        if (!objects.Contains(other.gameObject.transform) && other.gameObject.CompareTag("Fish"))
         {
             objects.Add(other.gameObject.transform);
         }
