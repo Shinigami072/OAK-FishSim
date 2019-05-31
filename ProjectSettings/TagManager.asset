@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FishAgent
   - Attractor
+  - Obstacle
   layers:
   - Default
   - TransparentFX

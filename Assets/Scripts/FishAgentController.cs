@@ -11,7 +11,9 @@ namespace DefaultNamespace
     {
         private List<FishMovementStrategy> _strategies;
         private float _weightSum;
+        private float t;
         private Vector3 _velocitySum;
+        private Vector3 oldDir;
 
 
         public Vector3 direction = Vector3.forward;
@@ -22,6 +24,7 @@ namespace DefaultNamespace
         {
             _strategies = GetComponents<FishMovementStrategy>().ToList();
             direction = Random.onUnitSphere;
+            oldDir = direction;
             velocity = Random.Range(0.1f, 0.5f);
         }
 
@@ -57,14 +60,21 @@ namespace DefaultNamespace
             {
                 var newDirection = meanVelocity.normalized;
 
-                if ((direction - newDirection).sqrMagnitude > 0.025)
+                if ((oldDir - newDirection).sqrMagnitude > 0.02)
                 {
-                    direction = Vector3.Lerp(direction,newDirection,Time.fixedTime);
-                    transform.LookAt(transform.position+direction);
-
+                   oldDir=newDirection;
+                   t = 0;
+                }
+                else
+                {
+                    t += Time.fixedTime;
+                    if (direction != oldDir)
+                    {
+                        direction = Vector3.Lerp(direction, oldDir, t / 20.0f);
+                        transform.LookAt(transform.position + direction);
+                    }
                 }
             }
-
             transform.position += meanVelocity * Time.fixedTime;
         }
     }
