@@ -9,11 +9,9 @@ using UnityEngine.Serialization;
 //[ExecuteInEditMode]
 public class FishAgent : MonoBehaviour
 {
-    public SphereCollider fishRadious;
-
     public float maxRadious;
-    [FormerlySerializedAs("AttractionRange")] public float attractionRange;
-    [FormerlySerializedAs("RepulsionRange")] public float repulsionRange;
+    public float attractionRange;
+    public float repulsionRange;
     public int contactCounter, contactCounterDisp;
 
     public Vector3 motion;
@@ -21,13 +19,10 @@ public class FishAgent : MonoBehaviour
     private Vector3 _summator, _sumDisp;
 
     private Vector3 _attractionsummator, _atrDisp;
-    private GameObject _target = null;
-    private float goalAttractiveness = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        fishRadious = GetComponent<SphereCollider>();
         var noise = Random.onUnitSphere;
         while (noise.y.Equals(0.0f))
         {
@@ -42,26 +37,17 @@ public class FishAgent : MonoBehaviour
 
     private void Update()
     {
-        transform.rotation = Quaternion.LookRotation(motion, Vector3.Reflect(motion, Vector3.up));
+        transform.rotation = Quaternion.LookRotation(motion, Vector3.up);
     }
 
     private void FixedUpdate()
     {
         _summator += motion;
         contactCounter += 1;
-        if (_target != null)
-        {
-            var diff = (_target.transform.position - transform.position);
-            if(diff.magnitude >3.0f)
-                _attractionsummator += (diff.normalized-motion.normalized).normalized/3e2f;
-        }
 
         motion *= 0.99999999997f;
         motion += ((_attractionsummator / contactCounter)) * (Time.fixedTime / 300.0f);
         motion += (_summator / contactCounter - motion) * Time.fixedTime / 1000.0f;
-        var noise = Random.onUnitSphere;
-        noise.y = 0;
-        motion += Vector3.Slerp(motion.normalized, noise, Time.fixedTime) * Time.fixedTime * 0.0000001f;
        
         transform.position += motion * Time.fixedTime;
         contactCounterDisp = contactCounter;
@@ -113,20 +99,6 @@ public class FishAgent : MonoBehaviour
 
                 break;
 
-            case "Attractor":
-            {
-                var diff = (other.transform.position - transform.position);
-                var dist = diff.magnitude;
-                float attract = other.gameObject.GetComponent<AttractorValue>().AttractValue/dist;
-                if (goalAttractiveness < attract)
-                {
-                    goalAttractiveness = attract;
-                    _target = other.gameObject;
-                }
-
-
-                break;
-            }
         }
     }
 }
