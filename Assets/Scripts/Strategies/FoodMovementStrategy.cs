@@ -2,65 +2,67 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class ObstacleMovementStrategy : FishMovementStrategy
+    public class FoodMovementStrategy : FishMovementStrategy
     {
         private FishAgentController _controller;
-        private Vector3 _direction;
+        public Vector3 _direction;
         private Vector3 _directionC;
-
-        private float _dist;
-        private float _stress;
-        public float decrease = 0.5f;
-        public float initialStress;
+        private float _dist, _distC;
+        private float _interest;
         public float maxSpeed = 0.01f;
+
 
         private void Start()
         {
-            _stress = initialStress;
-
+            _dist = float.NegativeInfinity;
             _controller = GetComponent<FishAgentController>();
         }
 
         private void FixedUpdate()
         {
-            if (_stress > 0.0) _stress -= Time.fixedDeltaTime * decrease;
-
-            if (_stress < 0.0) _stress = 0.0f;
+            if (_interest <= 0) _interest += 0.1f * Time.fixedDeltaTime;
 
             _directionC = _direction;
-            _direction = Vector3.zero;
-            _dist = -1;
+            _distC = _dist;
+            _dist = float.NegativeInfinity;
         }
 
         public override Vector3 GetVelocity(Vector3 direction, float velocity)
         {
-            if (_stress > 0.5f)
-                return maxSpeed * _stress * _directionC;
+            if (_distC > 0f && _interest > 0f)
+                return maxSpeed * _directionC;
             return direction * velocity;
         }
 
         private void OnTriggerStay(Collider other)
         {
-            var obs = other.GetComponent<Obstacle>();
+            var obs = other.GetComponent<FoodValue>();
+            if (_interest < 0) return;
+
             if (obs == null)
                 return;
 
             var pos = transform.position + _controller.velocity * Time.fixedDeltaTime * _controller.direction;
             var posO = other.ClosestPoint(pos);
-            var swapped = false;
-            if (posO == pos) posO = other.bounds.center;
 
-            var dist = pos - posO;
+            var dist = posO - pos;
+
 
             var distM = dist.magnitude;
 
-            var stress = obs.danger / distM * Time.fixedDeltaTime;
-            _stress += stress;
+            if (distM < float.Epsilon)
+            {
+                _interest -= 10.0f * Time.fixedDeltaTime;
+                return;
+            }
+
+            var food = obs.GetCurrentAttractiveness();
+
             var bonus = 1.0 - Vector3.Angle(dist, _controller.direction) / 180;
-            if (distM * stress * bonus > _dist)
+            if (food / distM * bonus > _dist)
             {
                 _direction = dist.normalized;
-                _dist = distM * stress;
+                _dist = food / distM;
             }
         }
     }
