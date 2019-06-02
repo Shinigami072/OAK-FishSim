@@ -8,6 +8,7 @@ TagManager:
   - Attractor
   - Obstacle
   - Fish
+  - Food
   layers:
   - Default
   - TransparentFX
@@ -44,4 +45,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Fish
+    uniqueID: 1818105949
     locked: 0
