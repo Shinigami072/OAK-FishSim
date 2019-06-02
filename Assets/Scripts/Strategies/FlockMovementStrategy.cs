@@ -18,7 +18,7 @@ namespace DefaultNamespace
         private Vector3 _outSpeed = Vector3.zero;
         private Vector3 _sumSpeedCalc;
         private float _fishCountCalc;
-        private FishAgentController _controller;
+        public FishAgentController _controller;
 
         private void Start()
         {

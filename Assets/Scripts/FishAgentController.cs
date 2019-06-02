@@ -23,21 +23,16 @@ namespace DefaultNamespace
         private void Start()
         {
             _strategies = GetComponents<FishMovementStrategy>().ToList();
-            direction = Random.onUnitSphere;
+            _strategies.RemoveAll(it => !it.enabled);
+            direction = transform.TransformDirection(Vector3.forward);
             oldDir = direction;
             velocity = Random.Range(0.1f, 0.5f);
         }
-
-        private void Update()
-        {
-        }
-        
 
         private void OnDrawGizmos()
 
         {
             var position = transform.position;
-//            Debug.DrawLine(position + Vector3.up, position + Vector3.up + direction * veloctity * 1000, Color.yellow);
             Debug.DrawLine(position, position + direction * 500, Color.magenta);
         }
 
@@ -52,9 +47,17 @@ namespace DefaultNamespace
                 _weightSum += strategy.weight;
             }
 
+            if (_weightSum <= 0)
+                return;
+
             var meanVelocity = _velocitySum / _weightSum;
 
             velocity = meanVelocity.magnitude;
+            if (float.IsNaN(velocity))
+            {
+                print("fish" + _weightSum + " " + _velocitySum + "," + direction + "->" + velocity + name);
+                velocity = 0.0f;
+            }
 
             if (velocity >= 0)
             {
@@ -62,8 +65,8 @@ namespace DefaultNamespace
 
                 if ((oldDir - newDirection).sqrMagnitude > 0.02)
                 {
-                   oldDir=newDirection;
-                   t = 0;
+                    oldDir = newDirection;
+                    t = 0;
                 }
                 else
                 {
@@ -74,8 +77,9 @@ namespace DefaultNamespace
                         transform.LookAt(transform.position + direction);
                     }
                 }
+
+                transform.position += meanVelocity * Time.fixedTime;
             }
-            transform.position += meanVelocity * Time.fixedTime;
         }
     }
 }

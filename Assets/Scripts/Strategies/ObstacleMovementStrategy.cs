@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 
 namespace DefaultNamespace
 {
     public class ObstacleMovementStrategy : FishMovementStrategy
     {
-        public float initialStress;
+        public float initialStress = 0.0f;
         public float decrease = 0.5f;
-        public float _stress;
+        private float _stress;
         public float maxSpeed = 0.01f;
         private Vector3 _direction;
         private Vector3 _directionC;
@@ -33,7 +34,7 @@ namespace DefaultNamespace
             {
                 _stress = 0.0f;
             }
-
+            
             _directionC = _direction;
             _direction = Vector3.zero;
             _dist = -1;
@@ -54,18 +55,31 @@ namespace DefaultNamespace
                 return;
 
             var pos = transform.position+_controller.velocity * Time.fixedTime * _controller.direction;
-            var pos_o = other.ClosestPoint(pos);
+            var posO = other.ClosestPoint(pos);
+            var swapped = false;
+            if (posO == pos)
+            {
+                posO = other.bounds.center;
+                swapped = true;
+            }
 
-            var dist = pos - pos_o;
+            var dist = pos - posO ;
 
-            var dist_m = Mathf.Max(1e-20f,Mathf.Pow(dist.magnitude,3.0f));
-            var stress = (obs.danger / dist_m) * Time.fixedTime;
+            var distM = dist.magnitude;
+            if (!swapped)
+                distM += 20.0f;
+            
+            if(distM<22)
+                print("nowisnan"+distM);
+            distM /= 10.0f;
+            var stress = (obs.danger / distM) * Time.fixedTime;
             _stress += stress;
+            
             var bonus = 1.0- Vector3.Angle(dist, _controller.direction) / 180;
-            if (dist_m * stress *bonus> _dist)
+            if (distM * stress *bonus> _dist)
             {
                 _direction = dist.normalized;
-                _dist = dist_m * stress;
+                _dist = distM * stress;
             }
         }
     }
