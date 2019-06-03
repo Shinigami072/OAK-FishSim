@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SharkFollow : MonoBehaviour
 {
-    private float mSpeed = 10.0f;
+    public float mSpeed = 10.0f;
 
     private const float EPSILON = 0.1f;
 
@@ -24,9 +24,9 @@ public class SharkFollow : MonoBehaviour
         if (fishTarget)
         {
             if ((transform.position - fishTarget.position).magnitude > EPSILON)
-                transform.Translate(0.0f, 0.0f, mSpeed * Time.deltaTime);
+                transform.Translate(0.0f, 0.0f, mSpeed * Time.fixedDeltaTime);
         }else
-            transform.Translate(transform.forward*Time.fixedTime);
+            transform.Translate(transform.forward*Time.fixedDeltaTime);
     }
     
     Transform GetClosestEnemy(List<Transform> enemies)
